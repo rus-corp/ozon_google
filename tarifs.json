@@ -1,0 +1,116 @@
+{
+    "tariffs": [
+        {
+            "volume_range": "0-1.9",
+            "price": 58
+        },
+        {
+            "volume_range": "1.901-2.9",
+            "price": 61
+        },
+        {
+            "volume_range": "2.901-4.9",
+            "price": 63
+        },
+        {
+            "volume_range": "4.901-5.9",
+            "price": 67
+        },
+        {
+            "volume_range": "5.901-6.9",
+            "price": 69
+        },
+        {
+            "volume_range": "6.901-7.9",
+            "price": 71
+        },
+        {
+            "volume_range": "7.901-8.4",
+            "price": 73
+        },
+        {
+            "volume_range": "8.401-8.9",
+            "price": 75
+        },
+        {
+            "volume_range": "8.901-9.4",
+            "price": 76
+        },
+        {
+            "volume_range": "9.401-9.9",
+            "price": 77
+        },
+        {
+            "volume_range": "9.901-14.9",
+            "price": 85
+        },
+        {
+            "volume_range": "14.901-19.9",
+            "price": 111
+        },
+        {
+            "volume_range": "19.901-24.9",
+            "price": 126
+        },
+        {
+            "volume_range": "24.901-29.9",
+            "price": 141
+        },
+        {
+            "volume_range": "29.901-34.9",
+            "price": 166
+        },
+        {
+            "volume_range": "34.901-39.9",
+            "price": 191
+        },
+        {
+            "volume_range": "39.901-44.9",
+            "price": 216
+        },
+        {
+            "volume_range": "44.901-49.9",
+            "price": 231
+        },
+        {
+            "volume_range": "49.901-54.9",
+            "price": 271
+        },
+        {
+            "volume_range": "54.901-59.9",
+            "price": 296
+        },
+        {
+            "volume_range": "59.901-64.9",
+            "price": 321
+        },
+        {
+            "volume_range": "64.901-69.9",
+            "price": 356
+        },
+        {
+            "volume_range": "69.901-74.9",
+            "price": 376
+        },
+        {
+            "volume_range": "74.901-99.9",
+            "price": 406
+        },
+        {
+            "volume_range": "99.901-124.9",
+            "price": 531
+        },
+        {
+            "volume_range": "124.901-149.9",
+            "price": 706
+        },
+        {
+            "volume_range": "149.901-174.9",
+            "price": 906
+        },
+        {
+            "volume_range": "174.901-999999.0",
+            "price": 1106
+        }
+    ]
+}
