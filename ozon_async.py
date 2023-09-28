@@ -4,8 +4,8 @@ import json
 import logging
 from more_itertools import chunked
 
-from .conf import ALL_OZON_HEADERS
-from .main import GoogleSheet
+from conf import ALL_OZON_HEADERS
+
 
 
 base_url = "https://api-seller.ozon.ru"
@@ -84,6 +84,18 @@ async def get_stock(session, client_id, api_key, name):
         tasks.append(task)
     products = await asyncio.gather(*tasks)
         
+       
+       
+        
+def write_to_file(filename, data):
+    try:
+        with open(filename, 'w', encoding='utf-8') as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)
+            print(f'Data was writing to {filename}')
+    except Exception as e:
+        print(f'Error writing: {str(e)}')
+            
+
         
 
 async def main(client_id, api_key, name):
@@ -92,23 +104,15 @@ async def main(client_id, api_key, name):
         return data
         
         
-
-async 
-        
-        
-        
-def data_to_write():
-    g = GoogleSheet()
-    
-        
-        
-        
-        
-        
         
 
 if __name__ == '__main__':
     for name, key in ALL_OZON_HEADERS.items():
         asyncio.run(main(name=name, client_id=key['Client-Id'], api_key=key['Api-Key']))
-
+    
+    print(len(product_data))
+    write_to_file('product_data.json', product_data)
+    with open('product_data.json', encoding='utf-8') as file:
+        data = json.load(file)
+    print(len(data))
     

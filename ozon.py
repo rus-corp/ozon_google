@@ -1,10 +1,10 @@
-from config import ALL_OZON_HEADERS, data_for_stocks
+
 import requests
 import json
 from pprint import pprint
 from datetime import datetime, timedelta
 
-from config import ALL_OZON_HEADERS
+
 
 
 
@@ -125,10 +125,10 @@ def get_stock(name, client_id, api_key):
 
 
 
-if __name__ == '__main__':
-    for name, key in ALL_OZON_HEADERS.items():
-        get_stock(name, key['Client-Id'], key['Api-Key'])
-    print(len(product_data))
+# if __name__ == '__main__':
+#     for name, key in ALL_OZON_HEADERS.items():
+#         get_stock(name, key['Client-Id'], key['Api-Key'])
+#     print(len(product_data))
     # with open('data.json', 'w', encoding='utf-8') as file:
     #     json.dump(product_data, file, indent=4, ensure_ascii=False)
          
