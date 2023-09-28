@@ -4,7 +4,7 @@ import json
 import logging
 from more_itertools import chunked
 
-from .config import ALL_OZON_HEADERS
+from .conf import ALL_OZON_HEADERS
 from .main import GoogleSheet
 
 
