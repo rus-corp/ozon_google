@@ -8,7 +8,7 @@ from more_itertools import chunked
 import os
 
 from conf import base_url, volume_range, delivery
-from analitics import get_month_analitics_for_data_list, get_month_analitics_for_total_list, get_week_analitics_for_data_list, get_week_analitics_for_total_list
+from analitics import get_month_analitics_for_data_list, get_week_analitics_for_data_list #, get_week_analitics_for_total_list, get_month_analitics_for_total_list
 from utils import write_to_file
 
 
@@ -27,10 +27,24 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
     result = await response.json()
     
     price = float(result['result']['price'])
-    comission_percent = float(result['result']['commissions'][2]['percent'])
-    comission = round(price * (comission_percent / 100), 2)
+    price_round = round(price, 2)
+    last_mile = float(price_round * 0.055)
+    try:
+        comission_percent = float(result['result']['commissions'][1]['percent'])
+    except:
+        comission_percent = 1
+        print(name, product_id)
+    
+    comission = round(price_round * (comission_percent / 100) + last_mile, 2)
+    
     comission_delivery_coast = round((comission + delivery_coast), 2)
-    marketing_price = float(result['result']['marketing_price'])
+    try:
+        marketing_price = float(result['result']['marketing_price'])
+        marketing_price_round = round(marketing_price, 2)
+    except:
+        print(name)
+        marketing_price_round = price_round
+        
     product_data.append(
         {
             'Магазин': name,
@@ -40,8 +54,8 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
             'Общее кол-во стоков в ЛК.': result['result']['stocks']['present'],
             'Статус': result['result']['status']['state_name'],
             'Комиссия + Логистика': comission_delivery_coast,
-            'Текущая цена продажи': round(price, 2),
-            'Цена с учётом скидки озон': round(marketing_price, 2)
+            'Текущая цена продажи': price_round,
+            'Цена с учётом скидки озон': marketing_price_round
         }
     )
     return product_data
