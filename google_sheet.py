@@ -41,7 +41,7 @@ def write_to_data_list(ws: Worksheet):
     with open('data_to_data_sheet.json', 'r', encoding='utf-8') as file:
         new_data = json.load(file)
     batches = []
-    for i in range(counter + 1, len(new_data) + 1):
+    for i in range(counter, len(new_data) + 1):
         for name, index in column_indexes_for_data.items():
             values = new_data[i-1].get(name, '')
             addr = rowcol_to_a1(i + 1, index)
@@ -68,7 +68,7 @@ def write_to_total_list(ws: Worksheet):
     with open('data_to_total_sheet.json', 'r', encoding='utf-8') as file:
         new_data = json.load(file)
     batches = []
-    for i in range(counter + 1, len(new_data) + 1):
+    for i in range(counter, len(new_data) + 1):
         for name, index in column_indexes_for_total.items():
             values = new_data[i-1].get(name, '')
             addr = rowcol_to_a1(i + 1, index)
@@ -85,8 +85,8 @@ def write_to_total_list(ws: Worksheet):
                 
         
 
-def google_main():
-    data_to_write_data_sheet()
+def google_main(file_path, today):
+    data_to_write_data_sheet(file_path, today)
     gc = gspread.service_account_from_dict(credentials)
     sh = gc.open_by_url(SPREADSHEET_URL)
     worksheet_list = sh.worksheets('DATA')

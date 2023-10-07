@@ -5,9 +5,9 @@ ALL_OZON_HEADERS = {
     'Voyor': {"Client-Id": "129047", "Api-Key": '06ef9d66-b383-4498-b75d-b5df7df4ce19'},
     '2BE': {"Client-Id": "37611", "Api-Key": 'cc9e2151-f99e-46d4-8ce5-97f2a8c58d2c'},
     'Arris': {"Client-Id": "54420", "Api-Key": 'de08b0be-46c5-4c58-a9e2-629257488100'},
-    # 'NemoCAM': {"Client-Id": "959685", "Api-Key": 'f29d59fa-d40f-49d7-b6f9-50036014c6a0'},
-    # 'Tabi': {"Client-Id": "1173379", "Api-Key": 'd18d07ad-6e0a-460f-9226-d03dfb7b4e61'},
-    # 'UniStellar': {"Client-Id": "638885", "Api-Key": '19841499-7918-4952-983b-5619f5f128e3'},
+    'NemoCAM': {"Client-Id": "959685", "Api-Key": 'f29d59fa-d40f-49d7-b6f9-50036014c6a0'},
+    'Tabi': {"Client-Id": "1173379", "Api-Key": 'd18d07ad-6e0a-460f-9226-d03dfb7b4e61'},
+    'UniStellar': {"Client-Id": "638885", "Api-Key": '19841499-7918-4952-983b-5619f5f128e3'},
 }
 
 
@@ -77,18 +77,26 @@ column_indexes_for_data = {
     "Общая конверсия в корзину (за неделю)": 21,
     "Заказов за неделю": 22,
     "Заказов за последний месяц": 23,
-    "Позиция в поиске и каталоге": 24
+    "Позиция в поиске и каталоге": 24,
+    "Продано 1 день назад": 26,
+    "Продано 2 дня назад": 27,
+    "Продано 3 дня назад": 28,
+    "Продано 4 дня назад": 29,
+    "Продано 5 дней назад": 30,
+    "Продано 6 дней назад": 31,
+    "Продано 7 дней назад": 32
 }
 
 
 column_indexes_for_total = {
   'Артикул': 1,
   'Оборот за 30 дней руб': 5,
-  'Продажи Прошлая ПН-ЧТ (позапрошлая) деньги': 7,
-  'Продажи Текущая ПН-ЧТ (прошлая) деньги': 8,
-  'Продажи ПН- ВСКР (позапрошлая) деньги': 10,
-  'Продажи ПН- ВСКР (прошлая) деньги': 11
+  'Продажи пн-чт 1 неделя': 7,
+  'Продажи пн-чт 2 неделя': 8,
+  'Продажи пн-вскр 1 неделя': 10,
+  'Продажи пн-вскр 2 неделя': 11
 }
+
 
 def volume_range(volume, delivery):
   for key in delivery:
@@ -99,17 +107,3 @@ def volume_range(volume, delivery):
       return delivery[key]
   return None
   
-
-
-def sum_metrix(data):
-  metrics_data = {}
-  for item in data:
-    dimensions = item['dimensions']
-    metrics = item['metrics']
-    if dimensions:
-      name = dimensions[0]['name']
-      if name not in metrics_data:
-        metrics_data[name] = [0] * len(metrics)
-      metrics_data[name] = [round(sum(x), 2) for x in zip(metrics_data[name], metrics)]
-  return metrics_data
-
