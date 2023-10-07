@@ -15,18 +15,29 @@ def main():
     for name, key in ALL_OZON_HEADERS.items():
         product_data = asyncio.run(ozon_main(name=name, client_id=key['Client-Id'], api_key=key['Api-Key']))
         analitics_main(client_id=key['Client-Id'], api_key=key['Api-Key'])
-    google_main()
-    # files = ['/Users/ruslanprusakov/my_project/ozon_google/data_to_total_sheet.json', '/Users/ruslanprusakov/my_project/ozon_google/get_month_analitics_for_data_list.json', '/Users/ruslanprusakov/my_project/ozon_google/get_month_analitics_for_total_list.json'
-    #          '/Users/ruslanprusakov/my_project/ozon_google/get_week_analitics_for_data_list.json', '/Users/ruslanprusakov/my_project/ozon_google/get_week_analitics_for_total_list.json', '/Users/ruslanprusakov/my_project/ozon_google/product_data.json']
-    # for file in files:
+        google_main()
+    
+    
+        files = ['/Users/ruslanprusakov/my_project/ozon_google/data_to_data_sheet.json', '/Users/ruslanprusakov/my_project/ozon_google/data_to_total_sheet.json',
+                '/Users/ruslanprusakov/my_project/ozon_google/get_month_analitics_for_data_list.json', '/Users/ruslanprusakov/my_project/ozon_google/get_week_analitics_for_data_list.json',
+                '/Users/ruslanprusakov/my_project/ozon_google/product_data.json', 'get_two_week_analitics.json']
+        
+        for file in files:
+            try:
+                os.remove(file)
+            except FileNotFoundError as e:
+                print(e)
+            except Exception as ex:
+                print(ex)
+            
+    # google_files = ['counter_data.json', 'counter_total.json']
+    # for file in google_files:
     #     try:
     #         os.remove(file)
     #     except FileNotFoundError as e:
     #         print(e)
     #     except Exception as ex:
     #         print(ex)
-            
-            
 
 
 if __name__ == '__main__':

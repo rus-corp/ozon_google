@@ -31,9 +31,9 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
     last_mile = float(price_round * 0.055)
     try:
         comission_percent = float(result['result']['commissions'][1]['percent'])
-    except:
+    except Exception as e:
         comission_percent = 1
-        print(name, product_id)
+        print(name, product_id,  e)
     
     comission = round(price_round * (comission_percent / 100) + last_mile, 2)
     
@@ -41,14 +41,15 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
     try:
         marketing_price = float(result['result']['marketing_price'])
         marketing_price_round = round(marketing_price, 2)
-    except:
-        print(name)
+    except Exception as e:
+        print(name, e)
         marketing_price_round = price_round
         
     product_data.append(
         {
             'Магазин': name,
             'Ozon Product ID': result['result']['fbs_sku'],
+            'fbo_sku': result['result']['fbo_sku'],
             'Артикул': offer_id,
             'Наименование товара': result['result']['name'],
             'Общее кол-во стоков в ЛК.': result['result']['stocks']['present'],
