@@ -143,7 +143,44 @@ def get_second_week_sales(file_path, today):
         current_date = current_date + timedelta(days=1)
     return total_sales
 
+
+def get_first_week_sales_to_thursday(file_path, today):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    start_day = today - timedelta(days=14)
+    end_day = start_day + timedelta(days=3)
     
+    total_sales = {}
+    current_date = start_day
+    while current_date <= end_day:
+        current_date_str = current_date.strftime('%Y-%m-%d')
+        daily_sales = data.get(current_date_str, {})
+        for product_id, metrics in daily_sales.items():
+            if product_id not in total_sales:
+                total_sales[product_id] = metrics[0]
+            total_sales[product_id] += metrics[1]
+        current_date = current_date + timedelta(days=1)
+    return total_sales
+
+    
+    
+def get_second_week_sales_to_thursday(file_path, today):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    start_day = today - timedelta(days=7)
+    end_day = start_day + timedelta(days=3)
+    
+    total_sales = {}
+    current_date = start_day
+    while current_date <= end_day:
+        current_date_str = current_date.strftime('%Y-%m-%d')
+        daily_sales = data.get(current_date_str, {})
+        for product_id, metrics in daily_sales.items():
+            if product_id not in total_sales:
+                total_sales[product_id] = metrics[0]
+            total_sales[product_id] += metrics[1]
+        current_date = current_date + timedelta(days=1)
+    return total_sales
 
 ################## Подготовка для записи данных на листы таблицы ##########################
 
@@ -208,8 +245,13 @@ def data_to_write_data_sheet(file_path, today):
         product['Продано 7 дня назад'] = total_six_days_ago_sales[1]
         
     
-    
-    
+    # if today.weekday() == 0:
+    sales_to_thursday_first = get_first_week_sales_to_thursday(file_path, today)
+    sales_to_thersday_second = get_second_week_sales_to_thursday(file_path, today)
+    first_week_sales = get_first_week_sales(file_path, today)
+    # second_week_sales = get_second_week_sales(file_path, today)
+        
+        
     ###################### проходимся по данным для запси в TOTAL SHEET ################   
     for product_item in data_to_total_sheet:
         product_id = str(product_item['Ozon Product ID'])
@@ -218,9 +260,16 @@ def data_to_write_data_sheet(file_path, today):
         month_metrics_for_product_fbo = month_dict.get(fbo_id, [0, 0])
         total_month_metrics = [x + y for x, y in zip(month_metrics_for_product_fbs, month_metrics_for_product_fbo)]
         product_item['Оборот за 30 дней руб'] = total_month_metrics[1]
-        # product_item['Продажи пн-чт 1 неделя'] = 
-        # product_item['Продажи пн-чт 2 неделя'] = 
-        # product_item['Продажи пн-вскр 1 неделя'] = 
+        sales_to_thersday_first_week_fbs = sales_to_thursday_first.get(product_id, 0)
+        sales_to_thersday_first_week_fbo = sales_to_thursday_first.get(fbo_id, 0)
+        product_item['Продажи пн-чт 1 неделя'] = sales_to_thersday_first_week_fbo + sales_to_thersday_first_week_fbs
+        
+        sales_to_thersday_second_week_fbs = sales_to_thersday_second.get(product_id, 0)
+        sales_to_thersday_second_week_fbo = sales_to_thersday_second.get(fbo_id, 0)
+        product_item['Продажи пн-чт 2 неделя'] = sales_to_thersday_second_week_fbo + sales_to_thersday_second_week_fbs
+        sales_first_week_fbs = first_week_sales.get(product_id, 0)
+        sales_first_week_fbo = first_week_sales.get(fbo_id, 0)
+        product_item['Продажи пн-вскр 1 неделя'] = sales_first_week_fbs + sales_first_week_fbo
         # product_item['Продажи пн-вскр 2 неделя'] = 
         
         

@@ -7,58 +7,66 @@ import json
 # import asyncio
 # import os
 
-# from conf import base_url
-# from utils import load_json_file, every_day_analitic_dict
-# from conf import ALL_OZON_HEADERS
 
+# from utils import get_first_week_sales, get_second_week_sales, get_first_week_sales_to_thursday, get_second_week_sales_to_thursday, load_json_file
 
-# async def get_every_day_analitic(session, client_id, api_key, today):
-#     date_to = today.strftime('%Y-%m-%d')
-#     print(f'Every day report {date_to} - {date_to}')
-#     data = {
-#         'date_from': date_to,
-#         'date_to': date_to,
-#         'dimension': [
-#             'sku'
-#         ],
-#         'filters': [],
-#         'limit': 1000,
-#         'metrics': [
-#             'revenue',
-#             'ordered_units',
-#         ]
-#     }
-#     headers = {
-#         'Client-Id': client_id,
-#         'Api-Key': api_key
-#     }
-#     method_url = '/v1/analytics/data'
-#     url = base_url + method_url
-#     response = await session.post(url=url, headers=headers, json=data)
-#     result = await response.json()
-#     async with aiofiles.open('get_every_day_analitics.json', 'w', encoding='utf-8') as file:
-#         await file.write(json.dumps(result['result']['data'], indent=2, ensure_ascii=False))
+# import copy
 
 
 
-
-# async def get_analitics(client_id, api_key, today):
-#     async with aiohttp.ClientSession() as session:
-#         every_day_analitic = await get_every_day_analitic(session, client_id, api_key, today)
-        
-
-
-# def analitics_main(client_id, api_key, today):
-#     asyncio.run(get_analitics(client_id, api_key, today))
-
-
-
-
-
-if __name__ == '__main__':
+# if __name__ == '__main__':
     
-    today = datetime.now() + timedelta(days=6)
-    print(today)
+#     today = datetime.now() + timedelta(days=2)
+#     data = load_json_file('product_data.json')
+#     file_path = 'store_sales/voyor_store.json'
+#     data_to_total_sheet = copy.deepcopy(data)
+#     sales_to_thursday_first = get_first_week_sales_to_thursday(file_path, today)
+#     sales_to_thersday_second = get_second_week_sales_to_thursday(file_path, today)
+#     # first_week_sales = get_first_week_sales(file_path, today)
+#     # second_week_sales = get_second_week_sales(file_path, today)
+    
+    
+#     for product_item in data_to_total_sheet:
+#         product_id = str(product_item['Ozon Product ID'])
+#         fbo_id = str(product_item['fbo_sku'])
+#         sales_to_thersday_first_week_fbo = sales_to_thursday_first.get(product_id, 0)
+#         sales_to_thersday_first_week_fbs = sales_to_thursday_first.get(fbo_id, 0)
+#         total_sales_to_thesday_first_week = sales_to_thersday_first_week_fbo + sales_to_thersday_first_week_fbs
+#         product_item['Продажи пн-чт 1 неделя'] = total_sales_to_thesday_first_week
+#         sales_to_thersday_second_week_fbo = sales_to_thersday_second.get(product_id, 0)
+#         sales_to_thersday_second_week_fbs = sales_to_thersday_second.get(fbo_id, 0)
+#         product_item['Продажи пн-чт 2 неделя'] = sales_to_thersday_second_week_fbo + sales_to_thersday_second_week_fbs
+        
+        
+        
+        # month_metrics_for_product_fbs = month_dict.get(product_id, [0, 0])
+        # month_metrics_for_product_fbo = month_dict.get(fbo_id, [0, 0])
+        # total_month_metrics = [x + y for x, y in zip(month_metrics_for_product_fbs, month_metrics_for_product_fbo)]
+        # product_item['Оборот за 30 дней руб'] = total_month_metrics[1]
+        # week_sales_for_fbs = first_week_sales.get(product_id, 0)
+        # week_sales_for_fbo = first_week_sales.get(fbo_id, 0)
+        # total_first_week_sales = [x + y for x, y in zip(week_sales_for_fbs, week_sales_for_fbo)]
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # a = today.weekday()
+    # print(a)
+    # if today.weekday() == 5:
+    #     print('yes')
+    # else:
+    #     print('no')
 
     # for name, key in ALL_OZON_HEADERS.items():
     #     match name:
@@ -83,23 +91,23 @@ if __name__ == '__main__':
     #     print(f'Собрали данные с {name}')
     
 
-    with open('store_sales/unistellar_store.json', 'r', encoding='utf-8') as file:
-        data = json.load(file)
-    start_date = datetime.now() - timedelta(days=12)
-    end_date = datetime.now() - timedelta(days=6)
+    # with open('store_sales/unistellar_store.json', 'r', encoding='utf-8') as file:
+    #     data = json.load(file)
+    # start_date = datetime.now() - timedelta(days=12)
+    # end_date = datetime.now() - timedelta(days=6)
     
     
-    total_sales = {}
-    current_date = start_date
-    while current_date <= end_date:
-        current_date_str = current_date.strftime('%Y-%m-%d')
-        daily_sales = data.get(current_date_str, {})
-        for product_id, metrics in daily_sales.items():
-            if product_id not in total_sales:
-                total_sales[product_id] = metrics[0]
-            total_sales[product_id] += metrics[1]
-        current_date = current_date + timedelta(days=1)
-    print(total_sales)
+    # total_sales = {}
+    # current_date = start_date
+    # while current_date <= end_date:
+    #     current_date_str = current_date.strftime('%Y-%m-%d')
+    #     daily_sales = data.get(current_date_str, {})
+    #     for product_id, metrics in daily_sales.items():
+    #         if product_id not in total_sales:
+    #             total_sales[product_id] = metrics[0]
+    #         total_sales[product_id] += metrics[1]
+    #     current_date = current_date + timedelta(days=1)
+    # print(total_sales)
 
 
 
