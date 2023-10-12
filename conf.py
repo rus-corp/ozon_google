@@ -4,14 +4,20 @@ base_url = "https://api-seller.ozon.ru"
 ALL_OZON_HEADERS = {
     'Voyor': {"Client-Id": "129047", "Api-Key": '06ef9d66-b383-4498-b75d-b5df7df4ce19'},
     '2BE': {"Client-Id": "37611", "Api-Key": 'cc9e2151-f99e-46d4-8ce5-97f2a8c58d2c'},
-    # 'Arris': {"Client-Id": "54420", "Api-Key": 'de08b0be-46c5-4c58-a9e2-629257488100'},
-    # 'NemoCAM': {"Client-Id": "959685", "Api-Key": 'f29d59fa-d40f-49d7-b6f9-50036014c6a0'},
-    # 'Tabi': {"Client-Id": "1173379", "Api-Key": 'd18d07ad-6e0a-460f-9226-d03dfb7b4e61'},
-    # 'UniStellar': {"Client-Id": "638885", "Api-Key": '19841499-7918-4952-983b-5619f5f128e3'},
+    'Arris': {"Client-Id": "54420", "Api-Key": 'de08b0be-46c5-4c58-a9e2-629257488100'},
+    'NemoCAM': {"Client-Id": "959685", "Api-Key": 'f29d59fa-d40f-49d7-b6f9-50036014c6a0'},
+    'Tabi': {"Client-Id": "1173379", "Api-Key": 'd18d07ad-6e0a-460f-9226-d03dfb7b4e61'},
+    'UniStellar': {"Client-Id": "638885", "Api-Key": '19841499-7918-4952-983b-5619f5f128e3'},
+    "PUFFER": {"Client-Id": '1365016', "Api-Key": 'd0c1c7fa-b480-4c0f-b46a-61890ff8bbb8'},
+    "Metalscan": {"Client-Id": '1368036', "Api-Key": '8921dcf4-88db-4316-adaa-e23d0b36de11'}
 }
 
 
 SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1ukxmf8Y8OTbLeJ43cnv2hhX4GKzYAjK2kJ6uIomgceU/edit#gid=0'
+
+# SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1wChbgiEH1kbztTAkaemCKqHUekbHposX5uoFfaoe0iU/edit#gid=202460545'
+
+
 
 credentials = {
   "type": "service_account",
@@ -96,6 +102,14 @@ column_indexes_for_total = {
   'Продажи пн-вскр 1 неделя': 10,
   'Продажи пн-вскр 2 неделя': 11
 }
+
+
+
+column_indexes_for_total_in_week = {
+  'Артикул': 1,
+  'Оборот за 30 дней руб': 5,
+}
+
 
 
 def volume_range(volume, delivery):

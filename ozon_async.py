@@ -3,6 +3,7 @@ import aiohttp
 import json
 import logging
 import aiofiles
+import logging
 
 from more_itertools import chunked
 import os
@@ -11,7 +12,7 @@ from conf import base_url, volume_range, delivery
 from analitics import get_month_analitics_for_data_list, get_week_analitics_for_data_list #, get_week_analitics_for_total_list, get_month_analitics_for_total_list
 from utils import write_to_file
 
-
+logger = logging.getLogger('ozon.product')
 
 product_data = []
 
@@ -25,7 +26,7 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
     url = base_url + method_url
     response = await session.post(url=url, headers=headers, json=data)
     result = await response.json()
-    
+    product_name = result['result']['name']
     price = float(result['result']['price'])
     price_round = round(price, 2)
     last_mile = float(price_round * 0.055)
@@ -33,7 +34,7 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
         comission_percent = float(result['result']['commissions'][1]['percent'])
     except Exception as e:
         comission_percent = 1
-        print(name, product_id,  e)
+        logging.info(f'Ошибка комиссии товара в магазине {name} - {e} товар:{product_name}')
     
     comission = round(price_round * (comission_percent / 100) + last_mile, 2)
     
@@ -42,7 +43,7 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
         marketing_price = float(result['result']['marketing_price'])
         marketing_price_round = round(marketing_price, 2)
     except Exception as e:
-        print(name, e)
+        logging.info(f'Ошибка цены товара в магазине {name} - {e} товар:{product_name}')
         marketing_price_round = price_round
         
     product_data.append(
@@ -83,10 +84,9 @@ async def get_product_param(session, offer_id, headers):
 
 
 
-async def get_stock(session, client_id, api_key, name):
+async def get_stock(session, client_id, api_key, name, visibility):
     data = {
-            "filter": {"visibility": "ALL"},
-            "last_id": "",
+            "filter": {"visibility": visibility},
             "limit": 1000,}
     headers = {
         'Client-Id': client_id,
@@ -111,7 +111,8 @@ async def get_stock(session, client_id, api_key, name):
         
 async def ozon_main(client_id, api_key, name):
     async with aiohttp.ClientSession() as session:
-        data = await get_stock(session, client_id, api_key, name)
+        data = await get_stock(session, client_id, api_key, name, 'ALL')
+        data_archive = await get_stock(session, client_id, api_key, name, 'ARCHIVED')
         async with aiofiles.open('product_data.json', 'w', encoding='utf-8') as file:
             await file.write(json.dumps(product_data, indent=2, ensure_ascii=False))
         return data
