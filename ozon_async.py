@@ -8,7 +8,7 @@ import logging
 from more_itertools import chunked
 import os
 
-from conf import base_url, volume_range, delivery
+from data import base_url, volume_range, delivery
 from analitics import get_month_analitics_for_data_list, get_week_analitics_for_data_list #, get_week_analitics_for_total_list, get_month_analitics_for_total_list
 from utils import write_to_file
 

@@ -11,7 +11,7 @@ import json
 import time
 
 
-from conf import ALL_OZON_HEADERS
+from data import ALL_OZON_HEADERS
 from utils import total_sheet_data, write_to_total_sheet
 from google_sheet import write_to_total_list, update_header_row
 

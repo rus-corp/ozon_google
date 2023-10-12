@@ -9,7 +9,7 @@ import logging
 from datetime import datetime, timedelta
 
 
-from conf import base_url
+from data import base_url
 
 logger = logging.getLogger('ozon.analitics')
 

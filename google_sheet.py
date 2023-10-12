@@ -6,12 +6,12 @@ from gspread.utils import rowcol_to_a1
 import logging
 from datetime import datetime, timedelta
 
-from conf import credentials, column_indexes_for_data, column_indexes_for_total, column_indexes_for_total_in_week
+from data import credentials, column_indexes_for_data, column_indexes_for_total, column_indexes_for_total_in_week
 from utils import data_to_write_data_sheet
 
 logger = logging.getLogger('google')
 
-from conf import SPREADSHEET_URL
+from data import SPREADSHEET_URL
 
 
 def update_header_row():
