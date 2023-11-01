@@ -12,7 +12,7 @@ import time
 
 
 from data import ALL_OZON_HEADERS
-from utils import total_sheet_data, write_to_total_sheet
+from utils import total_sheet_data, write_to_total_sheet, clean_sales
 from google_sheet import write_to_total_list, update_header_row
 
 
@@ -58,8 +58,11 @@ def main():
         product_data = asyncio.run(ozon_main(name=name, client_id=key['Client-Id'], api_key=key['Api-Key']))
         
         analitics_main(client_id=key['Client-Id'], api_key=key['Api-Key'], today=today, name=name)
+        
         google_main(file_path, today)
         write_to_total_sheet(file_path, today)      # компануем данные и продажи 
+        if datetime.now().weekday() == 0:
+            clean_sales(file_path)
     
         files = ['data_to_data_sheet.json', 
                 'get_month_analitics_for_data_list.json', 'get_week_analitics_for_data_list.json',

@@ -18,49 +18,53 @@ product_data = []
 
 
 async def get_product_data(session, offer_id, product_id, delivery_coast, headers, name):
-    data = {
-        'offer_id': offer_id,
-        'product_id': product_id
-    }
-    method_url = '/v2/product/info'
-    url = base_url + method_url
-    response = await session.post(url=url, headers=headers, json=data)
-    result = await response.json()
-    product_name = result['result']['name']
-    price = float(result['result']['price'])
-    price_round = round(price, 2)
-    last_mile = float(price_round * 0.055)
+    logger.info(f'Собираю параметры продукта для {name}')
     try:
-        comission_percent = float(result['result']['commissions'][1]['percent'])
-    except Exception as e:
-        comission_percent = 1
-        logging.info(f'Ошибка комиссии товара в магазине {name} - {e} товар:{product_name}')
-    
-    comission = round(price_round * (comission_percent / 100) + last_mile, 2)
-    
-    comission_delivery_coast = round((comission + delivery_coast), 2)
-    try:
-        marketing_price = float(result['result']['marketing_price'])
-        marketing_price_round = round(marketing_price, 2)
-    except Exception as e:
-        logging.info(f'Ошибка цены товара в магазине {name} - {e} товар:{product_name}')
-        marketing_price_round = price_round
-        
-    product_data.append(
-        {
-            'Магазин': name,
-            'Ozon Product ID': result['result']['fbs_sku'],
-            'fbo_sku': result['result']['fbo_sku'],
-            'Артикул': offer_id,
-            'Наименование товара': result['result']['name'],
-            'Общее кол-во стоков в ЛК.': result['result']['stocks']['present'],
-            'Статус': result['result']['status']['state_name'],
-            'Комиссия + Логистика': comission_delivery_coast,
-            'Текущая цена продажи': price_round,
-            'Цена с учётом скидки озон': marketing_price_round
+        data = {
+            'offer_id': offer_id,
+            'product_id': product_id
         }
-    )
-    return product_data
+        method_url = '/v2/product/info'
+        url = base_url + method_url
+        response = await session.post(url=url, headers=headers, json=data)
+        result = await response.json()
+        product_name = result['result']['name']
+        price = float(result['result']['price'])
+        price_round = round(price, 2)
+        last_mile = float(price_round * 0.055)
+        try:
+            comission_percent = float(result['result']['commissions'][1]['percent'])
+        except Exception as e:
+            comission_percent = 1
+            logging.info(f'Ошибка комиссии товара в магазине {name} - {e} товар:{product_name}')
+        
+        comission = round(price_round * (comission_percent / 100) + last_mile, 2)
+        
+        comission_delivery_coast = round((comission + delivery_coast), 2)
+        try:
+            marketing_price = float(result['result']['marketing_price'])
+            marketing_price_round = round(marketing_price, 2)
+        except Exception as e:
+            logging.info(f'Ошибка цены товара в магазине {name} - {e} товар:{product_name}')
+            marketing_price_round = price_round
+            
+        product_data.append(
+            {
+                'Магазин': name,
+                'Ozon Product ID': result['result']['fbs_sku'],
+                'fbo_sku': result['result']['fbo_sku'],
+                'Артикул': offer_id,
+                'Наименование товара': result['result']['name'],
+                'Общее кол-во стоков в ЛК.': result['result']['stocks']['present'],
+                'Статус': result['result']['status']['state_name'],
+                'Комиссия + Логистика': comission_delivery_coast,
+                'Текущая цена продажи': price_round,
+                'Цена с учётом скидки озон': marketing_price_round
+            }
+        )
+        return product_data
+    except Exception as e:
+        logger.error(f'Произошла ошибка при формировании товаров {name}, {str(e)}')
 
 
 
@@ -85,6 +89,7 @@ async def get_product_param(session, offer_id, headers):
 
 
 async def get_stock(session, client_id, api_key, name, visibility):
+    logger.info(f'Собираю сток для {name}')
     data = {
             "filter": {"visibility": visibility},
             "limit": 1000,}
@@ -110,6 +115,7 @@ async def get_stock(session, client_id, api_key, name, visibility):
         
         
 async def ozon_main(client_id, api_key, name):
+    print(f'Собираю товар для {name}')
     async with aiohttp.ClientSession() as session:
         data = await get_stock(session, client_id, api_key, name, 'ALL')
         data_archive = await get_stock(session, client_id, api_key, name, 'ARCHIVED')

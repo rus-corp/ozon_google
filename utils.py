@@ -160,11 +160,18 @@ def calculate_metrics(product_id, fbo_id, week_dict, month_dict,
             total_four_days_ago_sales, total_five_days_ago_sales, total_six_days_ago_sales, total_seven_day_ago_sales)
 
     
-
-def get_first_week_sales(file_path, today):
+# ============================== Недельные продажи ============================
+def get_first_week_sales(file_path, day):
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
-    start_day = today - timedelta(days=13)
+    current_day_of_week = datetime.now().weekday()
+    if current_day_of_week == 6:
+        pass
+    else:
+        correction = timedelta(days=current_day_of_week)
+        day -= correction
+    
+    start_day = day - timedelta(days=13)
     end_day = start_day + timedelta(days=6)
     logger.info(f' Формирую продажи за 1 неделю (пн-вс) для листа TOTAL за {start_day} - {end_day}')
     total_sales = {}
@@ -181,10 +188,17 @@ def get_first_week_sales(file_path, today):
     return total_sales
 
 
-def get_second_week_sales(file_path, today):
+def get_second_week_sales(file_path, day):
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
-    start_day = today - timedelta(days=6)
+    current_day_of_week = datetime.now().weekday()
+    if current_day_of_week == 6:
+        pass
+    else:
+        correction = timedelta(days=current_day_of_week)
+        day -= correction
+        
+    start_day = day - timedelta(days=6)
     end_day = start_day + timedelta(days=6)
     logger.info(f' Формирую продажи за 2 неделю (пн-вс) для листа TOTAL за {start_day} - {end_day}')
     total_sales = {}
@@ -201,10 +215,17 @@ def get_second_week_sales(file_path, today):
     return total_sales
 
 
-def get_first_week_sales_to_thursday(file_path, today):
+def get_first_week_sales_to_thursday(file_path, day):
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
-    start_day = today - timedelta(days=13)
+    current_day_of_week = datetime.now().weekday()
+    if current_day_of_week == 6:
+        pass
+    else:
+        correction = timedelta(days=current_day_of_week)
+        day -= correction
+        
+    start_day = day - timedelta(days=13)
     end_day = start_day + timedelta(days=3)
     
     total_sales = {}
@@ -222,10 +243,17 @@ def get_first_week_sales_to_thursday(file_path, today):
 
     
     
-def get_second_week_sales_to_thursday(file_path, today):
+def get_second_week_sales_to_thursday(file_path, day):
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
-    start_day = today - timedelta(days=6)
+    current_day_of_week = datetime.now().weekday()
+    if current_day_of_week == 6:
+        pass
+    else:
+        correction = timedelta(days=current_day_of_week)
+        day -= correction
+        
+    start_day = day - timedelta(days=6)
     end_day = start_day + timedelta(days=3)
     
     total_sales = {}
@@ -290,10 +318,13 @@ def data_to_write_data_sheet(file_path, today):
             five_days_ago_sales, six_days_ago_sales, seven_days_ago_sales, today)
         
         product['Заказов за неделю'] = total_week_metrics[0]
-        product['Уникальные посетители, всего'] = total_week_metrics[3]
-        product['Уникальные посетители с просмотром карточки товара'] = total_week_metrics[2]
-        product['Общая конверсия в корзину (за неделю)'] = total_week_metrics[1]
-        product['Позиция в поиске и каталоге'] = round(total_week_metrics[4], 2)
+        product['Уникальные посетители, всего'] = total_week_metrics[3] if len(total_week_metrics) > 3 else 0
+        product['Уникальные посетители с просмотром карточки товара'] = total_week_metrics[2] if len(total_week_metrics) > 2 else 0
+        product['Общая конверсия в корзину (за неделю)'] = total_week_metrics[1] if len(total_week_metrics) > 1 else 0
+        if len(total_week_metrics) > 4:
+            product['Позиция в поиске и каталоге'] = round(total_week_metrics[4], 2) 
+        else:
+            product['Позиция в поиске и каталоге'] = 0
         product['Заказов за последний месяц'] = total_month_metrics[0]
         product['Продано 1 день назад'] = total_every_day_metrics[1]         # это мы получаем из текущей аналитики
         product['Продано 2 дня назад'] = total_two_days_ago_sales[1]            # это и все остальные, нужно брать из файла
@@ -348,3 +379,22 @@ def write_to_total_sheet(file_path, today):
     total_data = data_to_load_total_sheet(data)
 
 
+
+
+def clean_sales(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    three_week_ago_date = datetime.now() - timedelta(days=21)
+    stop_date = three_week_ago_date + timedelta(days=6)
+    
+    while three_week_ago_date <=stop_date:
+        current_data = three_week_ago_date.strftime('%Y-%m-%d')
+        # current_stop_data = stop_date.strftime('%Y-%m-%d')
+        data.pop(current_data)
+        three_week_ago_date += timedelta(days=1)
+    with open(file_path, 'w', encoding='utf-8') as file:
+        json.dump(data, file, indent=2, ensure_ascii=False)
+    
+if __name__ == '__main__':
+    day = datetime.now() - timedelta(days=1)
+    get_first_week_sales('store_sales/voyor_store.json', day)

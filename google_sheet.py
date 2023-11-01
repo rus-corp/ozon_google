@@ -9,12 +9,13 @@ from datetime import datetime, timedelta
 from data import credentials, column_indexes_for_data, column_indexes_for_total, column_indexes_for_total_in_week
 from utils import data_to_write_data_sheet
 
-logger = logging.getLogger('google')
+logger = logging.getLogger('ozon.google')
 
 from data import SPREADSHEET_URL
 
 
 def update_header_row():
+    logger.info('меняю строки на листе DATA')
     gc = gspread.service_account_from_dict(credentials)
     sh = gc.open_by_url(SPREADSHEET_URL)
     ws = sh.worksheet('DATA')
@@ -27,6 +28,7 @@ def update_header_row():
 
 
 def write_to_data_list(ws: Worksheet):
+    logger.info('пишу данные в DATA')
     try:
         with open('counter_data.json', 'r', encoding='utf-8') as file:
             counter_data = json.load(file)
@@ -54,11 +56,12 @@ def write_to_data_list(ws: Worksheet):
 
 
 def write_to_total_list():
-    real_column = None
-    if datetime.now().weekday() == 0:
-        real_column = column_indexes_for_total
-    else:
-        real_column = column_indexes_for_total_in_week
+    logger.info('пишу данные в TOTAL')
+    # real_column = None
+    # if datetime.now().weekday() == 0:
+    real_column = column_indexes_for_total
+    # else:
+    #     real_column = column_indexes_for_total_in_week
     gc = gspread.service_account_from_dict(credentials)
     sh = gc.open_by_url(SPREADSHEET_URL)
     total = sh.worksheet('TOTAL')
