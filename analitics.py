@@ -26,7 +26,7 @@ async def get_month_analitics_for_data_list(session, client_id, api_key, today, 
         'date_from': date_from,
         'date_to': date_to,
         'dimension': [
-          'spu'  
+          'sku'  
         ],
         'filters': [],
         'limit': 1000,
@@ -50,7 +50,7 @@ async def get_month_analitics_for_data_list(session, client_id, api_key, today, 
             break
         else:
             logger.info('не смог получить аналитику за месяц')
-            await asyncio.sleep(60)
+            await asyncio.sleep(5)
 
 
 async def get_week_analitics_for_data_list(session, client_id, api_key, today, name):
@@ -67,7 +67,7 @@ async def get_week_analitics_for_data_list(session, client_id, api_key, today, n
             'date_from': date_from,
             'date_to': date_to,
             'dimension': [
-            'spu'
+            'sku'
             ],
             'filters': [],
             'limit': 1000,
@@ -95,7 +95,7 @@ async def get_week_analitics_for_data_list(session, client_id, api_key, today, n
                 
             else:
                 logger.info('не смог получить аналитику за неделю')
-                await asyncio.sleep(60)
+                await asyncio.sleep(5)
     except Exception as e:
         logger.error('Произошла ошибка при сборе недельной аналитики', str(e))
             
@@ -134,16 +134,14 @@ async def get_every_day_analitic(session, client_id, api_key, today, name):
             break
         else:
             logger.info('не смог получить аналитику за день')
-            await asyncio.sleep(60)
+            await asyncio.sleep(5)
     
 
             
 async def get_analitics(client_id, api_key, today, name):
     async with aiohttp.ClientSession() as session:
         month_analitic = await get_month_analitics_for_data_list(session, client_id, api_key, today, name)
-        await asyncio.sleep(60)
         week_analitic = await get_week_analitics_for_data_list(session, client_id, api_key, today, name)
-        await asyncio.sleep(60)
         every_day_analitic = await get_every_day_analitic(session, client_id, api_key, today, name)
         
 

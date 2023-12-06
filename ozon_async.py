@@ -18,7 +18,7 @@ product_data = []
 
 
 async def get_product_data(session, offer_id, product_id, delivery_coast, headers, name):
-    logger.info(f'Собираю параметры продукта для {name}')
+    # logger.info(f'Собираю параметры продукта для {name}')
     try:
         data = {
             'offer_id': offer_id,
@@ -52,6 +52,7 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
             {
                 'Магазин': name,
                 'Ozon Product ID': result['result']['fbs_sku'],
+                'SKU': result['result']['sku'],
                 'fbo_sku': result['result']['fbo_sku'],
                 'Артикул': offer_id,
                 'Наименование товара': result['result']['name'],
@@ -116,12 +117,13 @@ async def get_stock(session, client_id, api_key, name, visibility):
         
 async def ozon_main(client_id, api_key, name):
     print(f'Собираю товар для {name}')
+    product_data.clear()
     async with aiohttp.ClientSession() as session:
         data = await get_stock(session, client_id, api_key, name, 'ALL')
         data_archive = await get_stock(session, client_id, api_key, name, 'ARCHIVED')
-        async with aiofiles.open('product_data.json', 'w', encoding='utf-8') as file:
-            await file.write(json.dumps(product_data, indent=2, ensure_ascii=False))
-        return data
+        # async with aiofiles.open('product_data.json', 'w', encoding='utf-8') as file:
+        #     await file.write(json.dumps(product_data, indent=2, ensure_ascii=False))
+        return product_data
         
 
         

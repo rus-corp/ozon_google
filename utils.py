@@ -2,6 +2,10 @@ import json
 import copy
 from datetime import datetime, timedelta
 import logging
+from itertools import zip_longest
+
+
+
 
 logger = logging.getLogger('ozon.utils')
 
@@ -18,16 +22,44 @@ def load_every_day_analitic_to_file(file_path, data):
             json.dump(data, file, indent=2, ensure_ascii=False)
 
 
-def data_to_load_total_sheet(extend_data):
+def data_to_load_total_sheet(file_path, extend_data):
     try:
-        with open('for_total_sheet.json', 'r', encoding='utf-8') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
         data.extend(extend_data)
-        with open('for_total_sheet.json', 'w', encoding='utf-8') as file:
+        with open(file_path, 'w', encoding='utf-8') as file:
             json.dump(data, file, indent=2, ensure_ascii=False)
     except:
-        with open('for_total_sheet.json', 'w', encoding='utf-8') as file:
+        with open(file_path, 'w', encoding='utf-8') as file:
             json.dump(extend_data, file, indent=2, ensure_ascii=False)
+
+
+# def data_sheet_data_customize():
+#     with open('data_to_data_sheet.json', 'r', encoding='utf-8') as file:
+#         data = json.load(file)
+#     data_dict = {}
+#     for item in data:
+#         ozon_id = item['Ozon Product ID']
+#         fbo_id = item['fbo_sku']
+#         sku = item['SKU']
+#         if any(ozon_id, fbo_id) not in data_dict:
+#             data_dict[ozon_id] = item.copy()
+#         else:
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+#             data_dict[ozon_id]['Заказов за неделю'] += item['Заказов за неделю']
+
+
 
 
 
@@ -115,51 +147,24 @@ def get_yesterday_sales(file_path, date):
 
 
 
-def calculate_metrics(product_id, fbo_id, week_dict, month_dict,
-                      every_day_dict, two_days_ago_sales, 
-                      three_days_ago_sales, four_days_ago_sales, five_days_ago_sales, six_days_ago_sales, seven_day_ago_sales, today):
-    
-    week_metrics_for_product_fbs = week_dict.get(str(product_id), ([0] * 5))
-    week_metrics_for_product_fbo = week_dict.get(str(fbo_id), ([0] * 5))
-    total_week_metrics = [x + y for x, y in zip(week_metrics_for_product_fbs, week_metrics_for_product_fbo)]
-    
-    month_metrics_for_fbo = month_dict.get(str(product_id), [0, 0])
-    month_metrics_for_fbs = month_dict.get(str(fbo_id), [0, 0])
-    total_month_metrics = [x + y for x, y in zip(month_metrics_for_fbo, month_metrics_for_fbs)]
-    
-    every_day_metrics_for_fbs = every_day_dict[today.strftime('%Y-%m-%d')].get(str(product_id), [0, 0])
-    every_day_metrics_for_fbo = every_day_dict[today.strftime('%Y-%m-%d')].get(str(fbo_id), [0, 0])
-    total_every_day_metrics = [x + y for x, y in zip(every_day_metrics_for_fbs, every_day_metrics_for_fbo)]
-    
-    two_days_ago_sales_for_fbs = two_days_ago_sales.get(str(product_id), [0, 0])
-    two_days_ago_sales_for_fbo = two_days_ago_sales.get(str(fbo_id), [0, 0])
-    total_two_days_ago_sales = [x + y for x, y in zip(two_days_ago_sales_for_fbs, two_days_ago_sales_for_fbo)]
-    
-    three_days_ago_sales_for_fbs = three_days_ago_sales.get(str(product_id), [0, 0])
-    three_days_ago_sales_for_fbo = three_days_ago_sales.get(str(fbo_id), [0, 0])
-    total_three_days_ago_sales = [x + y for x, y in zip(three_days_ago_sales_for_fbs, three_days_ago_sales_for_fbo)]
-    
-    four_days_ago_sales_for_fbo = four_days_ago_sales.get(str(product_id), [0, 0])
-    four_days_ago_sales_for_fbs = four_days_ago_sales.get(str(fbo_id), [0, 0])
-    total_four_days_ago_sales = [x + y for x, y in zip(four_days_ago_sales_for_fbo, four_days_ago_sales_for_fbs)]
-    
-    five_days_ago_sales_for_fbo = five_days_ago_sales.get(str(product_id), [0, 0])
-    five_days_ago_sales_for_fbs = five_days_ago_sales.get(str(fbo_id), [0, 0])
-    total_five_days_ago_sales = [x + y for x, y in zip(five_days_ago_sales_for_fbo, five_days_ago_sales_for_fbs)]
-    
-    six_days_ago_sales_for_fbo = six_days_ago_sales.get(str(product_id), [0, 0])
-    six_days_ago_sales_for_fbs = six_days_ago_sales.get(str(fbo_id), [0, 0])
-    total_six_days_ago_sales = [x + y for x, y in zip(six_days_ago_sales_for_fbo, six_days_ago_sales_for_fbs)]
-    
-    seven_day_ago_sales_for_fbs = seven_day_ago_sales.get(str(product_id), [0, 0])
-    seven_day_ago_salesfor_fbo = seven_day_ago_sales.get(str(fbo_id), [0, 0])
-    total_seven_day_ago_sales = [x + y for x, y in zip(seven_day_ago_sales_for_fbs, seven_day_ago_salesfor_fbo)]
-    
-    return (total_week_metrics, total_month_metrics, total_every_day_metrics, 
-            total_two_days_ago_sales, total_three_days_ago_sales,
-            total_four_days_ago_sales, total_five_days_ago_sales, total_six_days_ago_sales, total_seven_day_ago_sales)
+def calculate_metrics(product_id, fbo_id, sku, data_dict, today=None):
+    default_value = 0
+    if today:
+        metrics_for_fbs = data_dict[today.strftime('%Y-%m-%d')].get(str(product_id), ([0] * 5))
+        metrics_for_fbo = data_dict[today.strftime('%Y-%m-%d')].get(str(fbo_id), ([0] * 5))
+        metrics_for_sku = data_dict[today.strftime('%Y-%m-%d')].get(str(sku), ([0] * 5))
+        total_metrics = [sum(x) for x in zip_longest(metrics_for_fbs, metrics_for_fbo, metrics_for_sku, fillvalue=default_value)]
+    else:
+        metrics_for_product_fbs = data_dict.get(str(product_id), ([0] * 5))
+        metrics_for_product_fbo = data_dict.get(str(fbo_id), ([0] * 5))
+        metrics_for_product_sku = data_dict.get(str(sku), ([0] * 5))
+        total_metrics = [sum(x) for x in zip_longest(metrics_for_product_fbs, metrics_for_product_fbo, metrics_for_product_sku, fillvalue=default_value)]
+    return total_metrics
 
-    
+
+
+
+
 # ============================== Недельные продажи ============================
 def get_first_week_sales(file_path, day):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -218,16 +223,12 @@ def get_second_week_sales(file_path, day):
 def get_first_week_sales_to_thursday(file_path, day):
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
-    current_day_of_week = datetime.now().weekday()
-    if current_day_of_week == 6:
-        pass
-    else:
-        correction = timedelta(days=current_day_of_week)
-        day -= correction
         
-    start_day = day - timedelta(days=13)
+    today = datetime.now()
+    current_day_of_week = today.weekday()
+    days_to_last_week = current_day_of_week + 7
+    start_day = today - timedelta(days=days_to_last_week)
     end_day = start_day + timedelta(days=3)
-    
     total_sales = {}
     current_date = start_day
     while current_date <= end_day:
@@ -246,15 +247,18 @@ def get_first_week_sales_to_thursday(file_path, day):
 def get_second_week_sales_to_thursday(file_path, day):
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
-    current_day_of_week = datetime.now().weekday()
-    if current_day_of_week == 6:
-        pass
+    
+    today = datetime.now()
+    current_day_of_week = today.weekday()
+    if current_day_of_week == 0:
+        start_day = today - timedelta(days=7)
     else:
-        correction = timedelta(days=current_day_of_week)
-        day -= correction
+        start_day = today - timedelta(days=current_day_of_week)
         
-    start_day = day - timedelta(days=6)
-    end_day = start_day + timedelta(days=3)
+    if 0 < current_day_of_week < 4:
+        end_day = today
+    else:
+        end_day = start_day + timedelta(days=3)
     
     total_sales = {}
     current_date = start_day
@@ -272,23 +276,24 @@ def get_second_week_sales_to_thursday(file_path, day):
 ################## Подготовка для записи данных на листы таблицы ##########################
 
 
-def data_to_write_data_sheet(file_path, today):
+def data_to_write_data_sheet(file_path, today, product_data: list):
     ############## Читам недельную аналитику ################
     week_analitics = load_json_file('get_week_analitics_for_data_list.json')
     ############## Читам месячную аналитику ################
     month_analitics = load_json_file('get_month_analitics_for_data_list.json')
     ############## Читам продукты ################
-    data = load_json_file('product_data.json')
+    # data = load_json_file('product_data.json')
     ############## Читам двух недельную аналитику ################
     every_day_analitics = load_json_file('get_every_day_analitics.json')
     
     ###################### копии данных для записи на разные листы ######################
-    data_to_data_sheet = copy.deepcopy(data)
+    # data_to_data_sheet = copy.deepcopy(product_data)
     
     ###################### недельные метрики для записи ##########################
     week_dict = metrics_dict(week_analitics)
     month_dict = metrics_dict(month_analitics)
     every_day_dict = every_day_analitic_dict(file_path, every_day_analitics, today)
+
     
     two_day = today - timedelta(days=1)
     three_day = today - timedelta(days=2)
@@ -303,19 +308,21 @@ def data_to_write_data_sheet(file_path, today):
     five_days_ago_sales = get_yesterday_sales(file_path, five_day)
     six_days_ago_sales = get_yesterday_sales(file_path, six_day)
     seven_days_ago_sales = get_yesterday_sales(file_path, seven_day)
-    
     logger.info('готовлю данные для записи в data sheet')
     ###################### проходимся по данным для запси в DATA SHEET ################
-    for product in data_to_data_sheet:
+    for product in product_data:
         product_id = product['Ozon Product ID']
         fbo_id = product['fbo_sku']
-        (total_week_metrics, total_month_metrics,
-         total_every_day_metrics, 
-         total_two_days_ago_sales, total_three_days_ago_sales, total_four_days_ago_sales, 
-         total_five_days_ago_sales, total_six_days_ago_sales, total_seven_day_ago_sales) = calculate_metrics(
-            product_id, fbo_id, week_dict, month_dict, every_day_dict, 
-            two_days_ago_sales, three_days_ago_sales, four_days_ago_sales, 
-            five_days_ago_sales, six_days_ago_sales, seven_days_ago_sales, today)
+        sku = product['SKU']
+        total_week_metrics = calculate_metrics(product_id, fbo_id, sku, week_dict)
+        total_month_metrics = calculate_metrics(product_id, fbo_id, sku, month_dict)
+        total_every_day_metrics = calculate_metrics(product_id, fbo_id, sku, every_day_dict)
+        total_two_days_ago_sales = calculate_metrics(product_id, fbo_id, sku, two_days_ago_sales)
+        total_three_days_ago_sales = calculate_metrics(product_id, fbo_id, sku, three_days_ago_sales)
+        total_four_days_ago_sales = calculate_metrics(product_id, fbo_id, sku, four_days_ago_sales)
+        total_five_days_ago_sales = calculate_metrics(product_id, fbo_id, sku, five_days_ago_sales)
+        total_six_days_ago_sales = calculate_metrics(product_id, fbo_id, sku, six_days_ago_sales)
+        total_seven_day_ago_sales = calculate_metrics(product_id, fbo_id, sku, seven_days_ago_sales)
         
         product['Заказов за неделю'] = total_week_metrics[0]
         product['Уникальные посетители, всего'] = total_week_metrics[3] if len(total_week_metrics) > 3 else 0
@@ -334,14 +341,15 @@ def data_to_write_data_sheet(file_path, today):
         product['Продано 6 дней назад'] = total_six_days_ago_sales[1]
         product['Продано 7 дней назад'] = total_seven_day_ago_sales[1]
         
-    with open('data_to_data_sheet.json', 'a+', encoding='utf-8') as file:
-            json.dump(data_to_data_sheet, file, indent=2, ensure_ascii=False)
+        
+    total_data = data_to_load_total_sheet('data_to_data_sheet.json', product_data) # здесь создаются дубли!!!!!
+
     
     
 
 
-def write_to_total_sheet(file_path, today):
-    data = load_json_file('product_data.json')
+def write_to_total_sheet(file_path, today, product_data):
+    # data = load_json_file('product_data.json')
     month_analitics = load_json_file('get_month_analitics_for_data_list.json')
     month_dict = metrics_dict(month_analitics)
     sales_to_thursday_first = get_first_week_sales_to_thursday(file_path, today)
@@ -352,7 +360,7 @@ def write_to_total_sheet(file_path, today):
         
     logger.info('готовлю данные для записи в total sheet')
     ###################### проходимся по данным для запси в TOTAL SHEET ################   
-    for product_item in data:
+    for product_item in product_data:
         product_id = str(product_item['Ozon Product ID'])
         fbo_id = str(product_item['fbo_sku'])
         month_metrics_for_product_fbs = month_dict.get(product_id, [0, 0])
@@ -376,7 +384,7 @@ def write_to_total_sheet(file_path, today):
         product_item['Продажи пн-вскр 2 неделя'] = sales_second_week_fbo + sales_second_week_fbs
 
     
-    total_data = data_to_load_total_sheet(data)
+    total_data = data_to_load_total_sheet('for_total_sheet.json', product_data) # здесь создаются дубли!!!!!
 
 
 
@@ -395,6 +403,8 @@ def clean_sales(file_path):
     with open(file_path, 'w', encoding='utf-8') as file:
         json.dump(data, file, indent=2, ensure_ascii=False)
     
-if __name__ == '__main__':
-    day = datetime.now() - timedelta(days=1)
-    get_first_week_sales('store_sales/voyor_store.json', day)
+    
+    
+    
+    
+    
