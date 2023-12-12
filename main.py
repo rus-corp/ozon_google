@@ -29,53 +29,50 @@ def init_logger(name):
     logger.debug('loger was initialized')
 
 
-
-
-
 def main():
     init_logger('ozon')
     # update_header_row()
-    # today = datetime.now() - timedelta(days=1)
-    # for name, key in ALL_OZON_HEADERS.items():
-    #     match name:
-    #         case 'Voyor':
-    #             file_path = 'store_sales/voyor_store.json'
-    #         case '2BE':
-    #             file_path = 'store_sales/2be_store.json'
-    #         case 'Arris':
-    #             file_path = 'store_sales/arris_store.json'
-    #         case 'NemoCAM':
-    #             file_path = 'store_sales/nemocam_store.json'
-    #         case 'Tabi':
-    #             file_path = 'store_sales/tabi_store.json'
-    #         case 'UniStellar':
-    #             file_path = 'store_sales/unistellar_store.json'
-    #         case 'PUFFER':
-    #             file_path = 'store_sales/puffer_store.json'
-    #         case 'Metalscan':
-    #             file_path = 'store_sales/metalscan_store.json'
-                    
-    #     product_data = asyncio.run(ozon_main(name=name, client_id=key['Client-Id'], api_key=key['Api-Key']))
-    #     analitics_main(client_id=key['Client-Id'], api_key=key['Api-Key'], today=today, name=name)
+    today = datetime.now() - timedelta(days=1)
+    for name, key in ALL_OZON_HEADERS.items():
+        match name:
+            case 'Voyor':
+                file_path = 'store_sales/voyor_store.json'
+            case 'Arris':
+                file_path = 'store_sales/arris_store.json'
+            case 'NemoCAM':
+                file_path = 'store_sales/nemocam_store.json'
+            case 'Tabi':
+                file_path = 'store_sales/tabi_store.json'
+            case 'UniStellar':
+                file_path = 'store_sales/unistellar_store.json'
+            case 'PUFFER':
+                file_path = 'store_sales/puffer_store.json'
+            case 'Metalscan':
+                file_path = 'store_sales/metalscan_store.json'
+              
+        product_data = asyncio.run(ozon_main(name=name, client_id=key['Client-Id'], api_key=key['Api-Key']))
+        analitics_main(client_id=key['Client-Id'], api_key=key['Api-Key'], today=today, name=name)
         
         
-    #     data_to_write_data_sheet(file_path, today, product_data)
-    #     write_to_total_sheet(file_path, today, product_data)
+        data_to_write_data_sheet(file_path, today, product_data)
+        write_to_total_sheet(file_path, today, product_data)
         
+        # if datetime.now().weekday() == 1:
+        #     clean_sales(file_path)
+            
+        files = [ 'get_month_analitics_for_data_list.json', 'get_week_analitics_for_data_list.json',
+                'get_every_day_analitics.json']
         
-    #     files = [ 'get_month_analitics_for_data_list.json', 'get_week_analitics_for_data_list.json',
-    #             'get_every_day_analitics.json']
-        
-    #     for file in files:
-    #         try:
-    #             os.remove(file)
-    #         except FileNotFoundError as e:
-    #             print(e)
-    #         except Exception as ex:
-    #             print(ex)
+        for file in files:
+            try:
+                os.remove(file)
+            except FileNotFoundError as e:
+                print(e)
+            except Exception as ex:
+                print(ex)
     
     google_main()
-    google_files = ['for_total_sheet.json', 'data_to_total_sheet.json']
+    google_files = ['for_total_sheet.json', 'data_to_total_sheet.json', 'data_to_data_sheet.json']
     for file in google_files:
         try:
             os.remove(file)
@@ -83,9 +80,6 @@ def main():
             print(e)
         except Exception as ex:
             print(ex)
-
-    # if datetime.now().weekday() == 1:
-    #         clean_sales(file_path)
 
 
 

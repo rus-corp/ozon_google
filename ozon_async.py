@@ -28,15 +28,21 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
         url = base_url + method_url
         response = await session.post(url=url, headers=headers, json=data)
         result = await response.json()
-        product_name = result['result']['name']
         price = float(result['result']['price'])
         price_round = round(price, 2)
+        try:
+            min_price = float(result['result']['min_price'])
+            min_price_round = round(min_price, 2)
+        except:
+            min_price_round = price_round
+
+        
         last_mile = float(price_round * 0.055)
         try:
             comission_percent = float(result['result']['commissions'][1]['percent'])
         except Exception as e:
             comission_percent = 1
-            logging.info(f'Ошибка комиссии товара в магазине {name} - {e} товар:{product_name}')
+            logging.info(f'Ошибка комиссии товара в магазине {name} - {e} товар:{result["result"]["name"]}')
         
         comission = round(price_round * (comission_percent / 100) + last_mile, 2)
         
@@ -45,7 +51,7 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
             marketing_price = float(result['result']['marketing_price'])
             marketing_price_round = round(marketing_price, 2)
         except Exception as e:
-            logging.info(f'Ошибка цены товара в магазине {name} - {e} товар:{product_name}')
+            logging.info(f'Ошибка цены товара в магазине {name} - {e} товар:{result["result"]["name"]}')
             marketing_price_round = price_round
             
         product_data.append(
@@ -60,7 +66,8 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
                 'Статус': result['result']['status']['state_name'],
                 'Комиссия + Логистика': comission_delivery_coast,
                 'Текущая цена продажи': price_round,
-                'Цена с учётом скидки озон': marketing_price_round
+                'Цена с учётом скидки озон': marketing_price_round,
+                'Минимальная цена': min_price_round
             }
         )
         return product_data
