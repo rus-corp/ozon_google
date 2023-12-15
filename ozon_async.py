@@ -1,16 +1,14 @@
 import asyncio
 import aiohttp
-import json
 import logging
-import aiofiles
 import logging
 
 from more_itertools import chunked
 import os
 
-from data import base_url, volume_range, delivery
-from analitics import get_month_analitics_for_data_list, get_week_analitics_for_data_list #, get_week_analitics_for_total_list, get_month_analitics_for_total_list
-from utils import write_to_file
+
+from data import base_url, volume_range, delivery, bot_token
+from telegram_bot import telegram_notify
 
 logger = logging.getLogger('ozon.product')
 
@@ -72,7 +70,12 @@ async def get_product_data(session, offer_id, product_id, delivery_coast, header
         )
         return product_data
     except Exception as e:
-        logger.error(f'Произошла ошибка при формировании товаров {name}, {str(e)}')
+        with open('users.txt') as file:
+            users = file.readlines()
+        message = f'Произошла ошибка при формировании товаров {name}, {str(e)}'
+        for user in users:
+            await telegram_notify(message=message, token=bot_token, chat_id=user)
+        logger.error(message)
 
 
 
@@ -123,16 +126,11 @@ async def get_stock(session, client_id, api_key, name, visibility):
         
         
 async def ozon_main(client_id, api_key, name):
+    logger.info(f'Собираю товар для {name}')
     print(f'Собираю товар для {name}')
     product_data.clear()
     async with aiohttp.ClientSession() as session:
         data = await get_stock(session, client_id, api_key, name, 'ALL')
         data_archive = await get_stock(session, client_id, api_key, name, 'ARCHIVED')
-        # async with aiofiles.open('product_data.json', 'w', encoding='utf-8') as file:
-        #     await file.write(json.dumps(product_data, indent=2, ensure_ascii=False))
         return product_data
         
-
-        
-        
-

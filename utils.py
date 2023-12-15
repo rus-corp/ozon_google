@@ -1,5 +1,4 @@
 import json
-import copy
 from datetime import datetime, timedelta
 import logging
 from itertools import zip_longest
